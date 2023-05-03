@@ -22,3 +22,32 @@ function drawSnake() {
   canva.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize); //x,y,width and height
 }
 startGame();
+
+document.body.addEventListener("keydown", keyDown);
+
+function keyDown() {
+  if (Event.keycode == 38) {
+    // move in up direction
+    if (ySpeed == 1) return;
+    ySpeed = -1;
+    xSpeed = 0;
+  }
+  if (Event.keycode == 40) {
+    // move in down direction
+    if (ySpeed == -1) return;
+    ySpeed = 1;
+    xSpeed = 0;
+  }
+  if (Event.keycode == 37) {
+    // move in left direction
+    if ((xSpeed = 1)) return;
+    ySpeed = 0;
+    xSpeed = -1;
+  }
+  if (Event.keycode == 39) {
+    // move in right direction
+    if (speed == -1) return;
+    ySpeed = 0;
+    xSpeed = 0;
+  }
+}
