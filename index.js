@@ -1,130 +1,71 @@
-const canvas = document.getElementById("snakecanva");
-const canva = canvas.getContext("2d");
-let speed = 7;
-let tileCount = 20;
-let tileSize = 18;
-let headX = 10;
-let headY = 10;
-let xSpeed = 0;
-let ySpeed = 0;
-let foodAtX = 5;
-let foodAtY = 5;
-const snakeParts = [];
-let tailLength = 2;
-
-function startGame() {
-  setScreen();
-  drawSnake();
-  changePosition();
-  drawFood();
-  setTimeout(startGame, 1000 / speed); // Rerender the screen 7 times a second
-}
-function setScreen() {
-  canva.fillStyle = "Brown"; //Give any shape from this point the color of brown.
-  canva.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight); // xposition yposition
-}
-function drawSnake() {
-  canva.fillStyle = "orange"; // tells the canva to fill the shape color to orange after any shapes you draw from this point.
-  canva.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize); //x,y,width and height
-}
-startGame();
-
-document.body.addEventListener("keydown", keyDown);
-
-function keyDown() {
-  if (Event.keycode == 38) {
-    // move in up direction
-    if (ySpeed == 1) return;
-    ySpeed = -1;
-    xSpeed = 0;
-  }
-  if (Event.keycode == 40) {
-    // move in down direction
-    if (ySpeed == -1) return;
-    ySpeed = 1;
-    xSpeed = 0;
-  }
-  if (Event.keycode == 37) {
-    // move in left direction
-    if ((xSpeed = 1)) return;
-    ySpeed = 0;
-    xSpeed = -1;
-  }
-  if (Event.keycode == 39) {
-    // move in right direction
-    if (speed == -1) return;
-    ySpeed = 0;
-    xSpeed = 0;
-  }
-}
-function changePosition() {
-  headX = headX + xSpeed;
-  headY = headY + ySpeed;
-}
-// Code to draw and establish the position of food
-function drawFood() {
-  canva.fillStyle = "blue";
-  canva.fillRect(foodAtX * tileCount, foodAtY * tileCount, tileSize, tileSize);
-}
-//Incorporate food and score
-
-function eatFood() {
-  // function to make sure food is not generated at same place as the snake
-  if (foodAtX == headX && foodAtY == headY) {
-    foodAtX = Math.floor(Math.random() * tileCount);
-    foodAtY = Math.floor(Math.random() * tileCount);
-    tailLength++;
-  }
-}
-//Make a prototype to make new parts in efficient manner
+const canvas = document.getElementById("mycanvas");
+const abc = canvas.getContext("2d");
+//increase snake size
 class snakePart {
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
 }
-function drawSnake() {
-  canva.fillStyle = "blue";
-  for (let i = 0; i < snakePart.length; i++) {
-    let part = snakeParts[i];
-    canva.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+
+let speed = 7;
+let tileCount = 20;
+
+let tileSize = canvas.clientWidth / tileCount - 2;
+let headX = 10;
+let headY = 10;
+
+// array representing parts of the snake
+const snakeParts = [];
+let tailLength = 2;
+
+//initialize the speed of the snake
+let xSpeed = 0;
+let ySpeed = 0;
+
+//draw food
+let foodAtX = 5;
+let foodAtY = 5;
+
+//scores
+let score = 0;
+
+// create a game loop to continuously update the screen
+function startGame() {
+  changeInPos();
+  // game over logic
+  let result = isGameOver();
+  if (result) {
+    // if result is true
+    return;
   }
-  //append parts to snakeParts
-  snakeParts.push(new snakePart(headX, headY)); // append an item to end of the array
-}
-//score will be incremented along with the tail of the snake.
-function drawScore() {
-  abc.fillStyle = "black"; // set our text color to white
-  abc.font = "12px verdena"; // font size to 12px
-  abc.fillText("Score: " + score, canvas.clientWidth - 50, 10); // position our score at right hand corner
-}
-function eatFood() {
-  if (foodAtX == headX && foodAtY == headY) {
-    foodAtX = Math.floor(Math.random() * tileCount);
-    foodAtY = Math.floor(Math.random() * tileCount);
-    tailLength++;
-    score++; //increase our score value
-  }
+  setScreen();
+  drawSnake(); //Method to display the body of the Snake
+  drawFood(); // Method to display food
+
+  eatFood(); // Method used for detecting the food intake
+  drawScore();
+  setTimeout(startGame, 1000 / speed); //update screen 7 times a second
 }
 // isGameOver() method to be invoked after the game becomes over
 function isGameOver() {
-  let gameisOver = false;
+  let gameOver = false;
   //check if the game has begun
   if (ySpeed === 0 && xSpeed === 0) {
     return false;
   }
   if (headX < 0) {
     //condition if snake collides with the left wall
-    gameisOver = true;
+    gameOver = true;
   } else if (headX === tileCount) {
     // condition if snake collides with the right wall
-    gameisOver = true;
+    gameOver = true;
   } else if (headY < 0) {
     //if snake collides with wall at the top
-    gameisOver = true;
+    gameOver = true;
   } else if (headY === tileCount) {
     //if snake collides with the wall at the bottom
-    gameisOver = true;
+    gameOver = true;
   }
 
   //condition for collision with its own body
@@ -133,10 +74,100 @@ function isGameOver() {
     let part = snakeParts[i];
     if (part.x === headX && part.y === headY) {
       //check whether any part of the snake is occupying the same space
-      gameisOver = true;
+      gameOver = true;
       break; // to break out of for loop
     }
   }
 
-  return gameisOver; //Game execution will be terminated
+  //To display the "Game Over" text after a collision occurs
+  if (gameOver) {
+    abc.fillStyle = "black";
+    abc.font = "30px verdana";
+    abc.fillText(
+      "Oops...Game Over! ",
+      canvas.clientWidth / 6.5,
+      canvas.clientHeight / 2
+    ); //position our text in center
+  }
+
+  return gameOver; // to stop the execution of Game
 }
+
+// Method to display the score
+function drawScore() {
+  abc.fillStyle = "black"; // set our text color to white
+  abc.font = "12px verdena"; // font size to 12px
+  abc.fillText("Score: " + score, canvas.clientWidth - 50, 10); // position our score at right hand corner
+}
+
+// clear our screen
+function setScreen() {
+  abc.fillStyle = "white"; // make screen brown
+  abc.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight); // brown color start from 0px left, right to canvas width and canvas height
+}
+function drawSnake() {
+  abc.fillStyle = "blue";
+  //traversing through snakeparts array
+  for (let i = 0; i < snakeParts.length; i++) {
+    //draw snake parts
+    let part = snakeParts[i];
+    abc.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+  }
+  //add parts to the snake --through push
+  snakeParts.push(new snakePart(headX, headY)); //put item at the end of the list next to the head
+  if (snakeParts.length > tailLength) {
+    snakeParts.shift(); //remove the furthest item from  snake part if we have more than our tail size
+  }
+  abc.fillStyle = "orange";
+  abc.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
+}
+function changeInPos() {
+  headX = headX + xSpeed;
+  headY = headY + ySpeed;
+}
+function drawFood() {
+  abc.fillStyle = "blue";
+  abc.fillRect(foodAtX * tileCount, foodAtY * tileCount, tileSize, tileSize);
+}
+// check for collision and change apple position
+function eatFood() {
+  if (foodAtX == headX && foodAtY == headY) {
+    foodAtX = Math.floor(Math.random() * tileCount);
+    foodAtY = Math.floor(Math.random() * tileCount);
+    tailLength++;
+    score++; //increase our score value
+  }
+}
+//add event listener to our body
+document.body.addEventListener("keydown", keyDown);
+
+function keyDown() {
+  //up
+  if (event.keyCode == 38) {
+    //prevent the snake from moving in the opposite direction
+    if (ySpeed == 1) return;
+    ySpeed = -1;
+    xSpeed = 0;
+  }
+  //down
+  if (event.keyCode == 40) {
+    if (ySpeed == -1) return;
+    ySpeed = 1;
+    xSpeed = 0;
+  }
+
+  //left
+  if (event.keyCode == 37) {
+    if (xSpeed == 1) return;
+    ySpeed = 0;
+    xSpeed = -1;
+  }
+  //right
+  if (event.keyCode == 39) {
+    if (xSpeed == -1) return;
+    ySpeed = 0;
+    xSpeed = 1;
+  }
+}
+
+startGame();
