@@ -92,3 +92,51 @@ function drawSnake() {
   //append parts to snakeParts
   snakeParts.push(new snakePart(headX, headY)); // append an item to end of the array
 }
+//score will be incremented along with the tail of the snake.
+function drawScore() {
+  abc.fillStyle = "black"; // set our text color to white
+  abc.font = "12px verdena"; // font size to 12px
+  abc.fillText("Score: " + score, canvas.clientWidth - 50, 10); // position our score at right hand corner
+}
+function eatFood() {
+  if (foodAtX == headX && foodAtY == headY) {
+    foodAtX = Math.floor(Math.random() * tileCount);
+    foodAtY = Math.floor(Math.random() * tileCount);
+    tailLength++;
+    score++; //increase our score value
+  }
+}
+// isGameOver() method to be invoked after the game becomes over
+function isGameOver() {
+  let gameisOver = false;
+  //check if the game has begun
+  if (ySpeed === 0 && xSpeed === 0) {
+    return false;
+  }
+  if (headX < 0) {
+    //condition if snake collides with the left wall
+    gameisOver = true;
+  } else if (headX === tileCount) {
+    // condition if snake collides with the right wall
+    gameisOver = true;
+  } else if (headY < 0) {
+    //if snake collides with wall at the top
+    gameisOver = true;
+  } else if (headY === tileCount) {
+    //if snake collides with the wall at the bottom
+    gameisOver = true;
+  }
+
+  //condition for collision with its own body
+
+  for (let i = 0; i < snakeParts.length; i++) {
+    let part = snakeParts[i];
+    if (part.x === headX && part.y === headY) {
+      //check whether any part of the snake is occupying the same space
+      gameisOver = true;
+      break; // to break out of for loop
+    }
+  }
+
+  return gameisOver; //Game execution will be terminated
+}
