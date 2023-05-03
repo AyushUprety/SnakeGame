@@ -7,12 +7,17 @@ let headX = 10;
 let headY = 10;
 let xSpeed = 0;
 let ySpeed = 0;
+let foodAtX = 5;
+let foodAtY = 5;
+const snakeParts = [];
+let tailLength = 2;
 
 function startGame() {
   setScreen();
-  setTimeout(startGame, 1000 / speed); // Rerender the screen 7 times a second
   drawSnake();
   changePosition();
+  drawFood();
+  setTimeout(startGame, 1000 / speed); // Rerender the screen 7 times a second
 }
 function setScreen() {
   canva.fillStyle = "Brown"; //Give any shape from this point the color of brown.
@@ -55,4 +60,35 @@ function keyDown() {
 function changePosition() {
   headX = headX + xSpeed;
   headY = headY + ySpeed;
+}
+// Code to draw and establish the position of food
+function drawFood() {
+  canva.fillStyle = "blue";
+  canva.fillRect(foodAtX * tileCount, foodAtY * tileCount, tileSize, tileSize);
+}
+//Incorporate food and score
+
+function eatFood() {
+  // function to make sure food is not generated at same place as the snake
+  if (foodAtX == headX && foodAtY == headY) {
+    foodAtX = Math.floor(Math.random() * tileCount);
+    foodAtY = Math.floor(Math.random() * tileCount);
+    tailLength++;
+  }
+}
+//Make a prototype to make new parts in efficient manner
+class snakePart {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+function drawSnake() {
+  canva.fillStyle = "blue";
+  for (let i = 0; i < snakePart.length; i++) {
+    let part = snakeParts[i];
+    canva.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+  }
+  //append parts to snakeParts
+  snakeParts.push(new snakePart(headX, headY)); // append an item to end of the array
 }
