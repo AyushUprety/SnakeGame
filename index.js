@@ -12,6 +12,7 @@ function startGame() {
   setScreen();
   setTimeout(startGame, 1000 / speed); // Rerender the screen 7 times a second
   drawSnake();
+  changePosition();
 }
 function setScreen() {
   canva.fillStyle = "Brown"; //Give any shape from this point the color of brown.
@@ -50,4 +51,8 @@ function keyDown() {
     ySpeed = 0;
     xSpeed = 0;
   }
+}
+function changePosition() {
+  headX = headX + xSpeed;
+  headY = headY + ySpeed;
 }
