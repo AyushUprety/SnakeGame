@@ -1,0 +1,18 @@
+#content-desktop {
+  display: block;
+}
+#content-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  #content-desktop {
+    display: none;
+  }
+  #content-mobile {
+    display: block;
+  }
+}
+* {
+  background: linear-gradient(46deg, rgb(104, 169, 104), rgb(83, 179, 83));
+}
