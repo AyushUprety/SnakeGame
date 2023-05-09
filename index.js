@@ -1,5 +1,6 @@
 const canvas = document.getElementById("mycanvas");
 const abc = canvas.getContext("2d");
+
 //increase snake size
 class snakePart {
   constructor(x, y) {
@@ -17,7 +18,7 @@ let headY = 10;
 
 // array representing parts of the snake
 const snakeParts = [];
-let tailLength = 2;
+let tailLength = 1;
 
 //initialize the speed of the snake
 let xSpeed = 0;
@@ -105,21 +106,37 @@ function setScreen() {
   abc.fillStyle = "white"; // make screen brown
   abc.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight); // brown color start from 0px left, right to canvas width and canvas height
 }
+let snakeImg = new Image();
+snakeImg.src = "/pngtree-snake-head-cartoon-png-image_6581775.jpg";
+snakeImg.onload = function () {
+  drawSnake();
+};
+
 function drawSnake() {
-  abc.fillStyle = "blue";
-  //traversing through snakeparts array
+  abc.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < snakeParts.length; i++) {
-    //draw snake parts
     let part = snakeParts[i];
-    abc.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+    abc.drawImage(
+      snakeImg,
+      part.x * tileCount,
+      part.y * tileCount,
+      tileSize,
+      tileSize
+    );
   }
-  //add parts to the snake --through push
-  snakeParts.push(new snakePart(headX, headY)); //put item at the end of the list next to the head
+
+  snakeParts.push(new snakePart(headX, headY));
   if (snakeParts.length > tailLength) {
-    snakeParts.shift(); //remove the furthest item from  snake part if we have more than our tail size
+    snakeParts.shift();
   }
-  abc.fillStyle = "orange";
-  abc.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
+
+  abc.drawImage(
+    snakeImg,
+    headX * tileCount,
+    headY * tileCount,
+    tileSize,
+    tileSize
+  );
 }
 function changeInPos() {
   headX = headX + xSpeed;
@@ -169,5 +186,4 @@ function keyDown() {
     xSpeed = 1;
   }
 }
-
 startGame();
